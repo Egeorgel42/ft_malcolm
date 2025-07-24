@@ -2,6 +2,7 @@ CC = gcc
 SRC = main.c \
 parsing.c\
 utils.c\
+arp.c\
 
 SRC_BONUS = 
 
