@@ -37,7 +37,7 @@ else
 	rm -f $(OBJ)
 endif
 
-.c.o: $(HDR) Makefile
+%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 bonus:
