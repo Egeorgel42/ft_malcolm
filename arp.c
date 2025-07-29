@@ -28,6 +28,7 @@ void	test_arp()
 
 	if (len > 0 && packet.arp_header.ar_op == htons(ARPOP_REQUEST)) {
 		// Process ARP request
+		ft_printf("recieved arp request\n");
 		handle_arp_request(&packet, &addr);
 	}
 }
