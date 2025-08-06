@@ -19,9 +19,9 @@ void	init_msgs(runtime* run)
 		exit(1);
 	}
 	assign_msg(INV_PARAMS, "ft_malcolm: Invalid parameters: source_ip | source_mac_addr | target_ip | target_mac_addr\n", run->err);
-	assign_msg(INV_IP, "t_malcolm: unknown host or invalid IP address: (%s)\n", run->err);
-	assign_msg(INV_MAC, "t_malcolm: invalid mac address: (%s)\n", run->err);
-	assign_msg(SOCK_ERR, "t_malcolm: Socket creation failed\n", run->err);
+	assign_msg(INV_IP, "ft_malcolm: unknown host or invalid IP address: (%s)\n", run->err);
+	assign_msg(INV_MAC, "ft_malcolm: invalid mac address: (%s)\n", run->err);
+	assign_msg(SOCK_ERR, "ft_malcolm: Socket creation failed\n", run->err);
 
 	run->steps = malloc(sizeof(char*) * (STEPS_MAX + 1));
 	if (!run->steps)
