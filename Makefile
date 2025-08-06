@@ -3,6 +3,7 @@ SRC = main.c \
 parsing.c\
 utils.c\
 arp.c\
+msg.c\
 
 SRC_BONUS = 
 
@@ -12,7 +13,7 @@ OBJ_BONUS = ${SRC_BONUS:.c=.o}
 
 LFLAGS = -Llibft -lft
 
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g
 LIBFT = libft/libft.a
 HDR = malcolm.h
 HDRB = malcolm_bonus.h

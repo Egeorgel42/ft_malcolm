@@ -6,6 +6,8 @@
 # include <arpa/inet.h>
 # include <string.h>
 # include <ifaddrs.h>
+# include <stdio.h>
+# include <stdarg.h>
 # include <sys/socket.h>
 # include <netinet/if_ether.h>
 # include <netpacket/packet.h>
@@ -32,6 +34,7 @@ typedef enum e_err {
 	INV_PARAMS,
 	INV_IP,
 	INV_MAC,
+	SOCK_ERR,
 	ERR_MAX
 } err;
 
@@ -45,10 +48,11 @@ typedef enum e_steps {
 } steps;
 
 void	parse_params(int argc, char**argv, runtime* run);
-void	err_exit(int err, runtime* run, char* err_var);
+void	print_step(int step, runtime* run, ...);
+void	err_exit(int err, runtime* run, ...);
 void	init_msgs(runtime* run);
 bool	is_hexa(char* str, int size);
 bool	is_character(char* str, int size, char c);
-void	test_arp();
+void	arp(runtime* run);
 
 #endif

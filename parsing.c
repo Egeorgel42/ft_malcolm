@@ -34,7 +34,7 @@ static in_addr_t	parse_ip(char* str, runtime* run)
 void	parse_params(int argc, char**argv, runtime* run)
 {
 	if (argc != 5)
-		err_exit(INV_PARAMS, run, NULL);
+		err_exit(INV_PARAMS, run);
 	run->ip_src = parse_ip(argv[1], run);
 	parse_mac(argv[2], run);
 	run->ip_trg = parse_ip(argv[3], run);
