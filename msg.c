@@ -12,7 +12,7 @@ static void	assign_msg(int nbr, char* msg, char** msg_arr)
 
 void	init_msgs(runtime* run)
 {
-	run->err = malloc(sizeof(char*) * (ERR_MAX + 1));
+	run->err = malloc(sizeof(char*) * ERR_MAX);
 	if (!run->err)
 	{
 		ft_printf(strerror(errno));
@@ -23,7 +23,7 @@ void	init_msgs(runtime* run)
 	assign_msg(INV_MAC, "ft_malcolm: invalid mac address: (%s)\n", run->err);
 	assign_msg(SOCK_ERR, "ft_malcolm: Socket creation failed\n", run->err);
 
-	run->steps = malloc(sizeof(char*) * (STEPS_MAX + 1));
+	run->steps = malloc(sizeof(char*) * STEPS_MAX);
 	if (!run->steps)
 	{
 		ft_printf(strerror(errno));
