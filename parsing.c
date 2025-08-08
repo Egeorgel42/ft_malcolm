@@ -28,7 +28,7 @@ static in_addr_t	parse_ip(char* str, runtime* run)
 	in_addr_t ip = inet_addr(str);
 	if (ip == (in_addr_t)(-1))
 		err_exit(INV_IP, run, str);
-	return ip;
+	return htonl(ip);
 }
 
 void	parse_params(int argc, char**argv, runtime* run)
