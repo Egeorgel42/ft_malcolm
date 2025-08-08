@@ -1,17 +1,20 @@
 #include "malcolm.h"
 
-void send_arp_reply(struct arp_packet *request, struct sockaddr_ll *addr)
+bool	listen_arp(runtime *run, int sock)
 {
-	(void)request;
-	(void)addr;
-}
+	socklen_t interface_len = sizeof(run->interface);
 
-void handle_arp_request(struct arp_packet *request, struct sockaddr_ll *addr) {
-    // Check if the target IP matches your interface IP
-	unsigned char your_ip_address[4] = {11, 11, 11, 11};
-    if (memcmp(request->target_ip, &your_ip_address, 4) == 0) {
-        send_arp_reply(request, addr);
-    }
+	ssize_t len = recvfrom(sock, &run->request, sizeof(run->request), 0, (struct sockaddr*)&run->interface, &interface_len);
+
+	if (len > 0 && run->request.arp_header.ar_op == htons(ARPOP_REQUEST) && (run->ip_trg == 0 || run->request.target_ip == run->ip_trg)) {
+		char ifname[IF_NAMESIZE];
+
+		if (!if_indextoname(run->interface.sll_ifindex, ifname))
+			err_exit(ERR_MAX, run);
+		print_step(STEP_INTERFACE, run, ifname);
+		return true;
+	}
+	return false;
 }
 
 void	arp(runtime* run)
@@ -20,19 +23,5 @@ void	arp(runtime* run)
 	if (sock < 0) {
 		err_exit(SOCK_ERR, run);
 	}
-
-	struct arp_packet packet;
-	struct sockaddr_ll addr;
-	socklen_t addr_len = sizeof(addr);
-
-	ssize_t len = recvfrom(sock, &packet, sizeof(packet), 0, (struct sockaddr*)&addr, &addr_len);
-
-	if (len > 0 && packet.arp_header.ar_op == htons(ARPOP_REQUEST)) {
-		char ifname[IF_NAMESIZE];
-
-		if (!if_indextoname(addr.sll_ifindex, ifname))
-			err_exit(ERR_MAX, run);
-		print_step(STEP_INTERFACE, run, ifname);
-		handle_arp_request(&packet, &addr);
-	}
+	while (!listen_arp(run, sock)) {}
 }

@@ -15,19 +15,22 @@
 # include <net/if_arp.h>
 
 struct arp_packet {
-    struct ethhdr eth_header;
-    struct arphdr arp_header;
-    unsigned char sender_mac[6];
-    unsigned char sender_ip[4];
-    unsigned char target_mac[6];
-    unsigned char target_ip[4];
+    struct ethhdr	eth_header;
+    struct arphdr	arp_header;
+    unsigned char	sender_mac[6];
+    in_addr_t		sender_ip;
+    unsigned char	target_mac[6];
+    in_addr_t		target_ip;
 } __attribute__((packed));
 
 typedef struct s_runtime {
-	char**	err;
-	char**	steps;
-	in_addr_t ip_src;
-	in_addr_t ip_trg;
+	char**				err;
+	char**				steps;
+	in_addr_t			ip_src;
+	in_addr_t			ip_trg;
+	struct arp_packet	request;
+	struct sockaddr_ll	interface;
+	
 } runtime;
 
 typedef enum e_err {
