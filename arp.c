@@ -6,7 +6,7 @@ bool	listen_arp(runtime *run, int sock)
 
 	ssize_t len = recvfrom(sock, &run->request, sizeof(run->request), 0, (struct sockaddr*)&run->interface, &interface_len);
 
-	if (len > 0 && run->request.arp_header.ar_op == htons(ARPOP_REQUEST) && (run->ip_trg == 0 || run->request.target_ip == run->ip_trg)) {
+	if (len > 0 && run->request.arp_header.ar_op == htons(ARPOP_REQUEST) && (run->ip_trg == 0 || htonl(run->request.target_ip) == run->ip_trg)) {
 		char ifname[IF_NAMESIZE];
 
 		if (!if_indextoname(run->interface.sll_ifindex, ifname))
