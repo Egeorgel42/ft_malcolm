@@ -43,7 +43,7 @@ void	parse_params(int argc, char**argv, runtime* run)
 	if (argc != 5)
 		err_exit(INV_PARAMS, run);
 	run->ip_src = parse_ip(argv[1], run);
-	parse_mac((char*)run->mac_src, argv[2], run, false);
+	parse_mac(argv[2], (char*)run->mac_src, run, false);
 	run->ip_trg = parse_ip(argv[3], run);
-	parse_mac((char*)run->mac_trg, argv[4], run, true);
+	parse_mac(argv[4], (char*)run->mac_trg, run, true);
 }
