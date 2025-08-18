@@ -4,6 +4,7 @@ static void	parse_mac(char* src, char* dest, runtime* run, bool has_star)
 {
 	bool star = false;
 	int j = 0;
+	int k = 0;
 	for (int i = 0;; i++)
 	{
 		if (is_character(&src[j], 2, '*'))
@@ -16,7 +17,8 @@ static void	parse_mac(char* src, char* dest, runtime* run, bool has_star)
 			err_exit(INV_MAC, run, src);
 		else if (!is_hexa(&src[j], 2))
 			err_exit(INV_MAC, run, src);
-		ft_strlcpy(&dest[j], &src[j], 2);
+		ft_strlcpy(&dest[k], &src[j], 2);
+		k += 2;
 		j += 2;
 		if (!(i < 5))
 			break;
