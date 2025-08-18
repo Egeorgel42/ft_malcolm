@@ -1,26 +1,31 @@
 #include "malcolm.h"
 
-static void	parse_mac(char* str, runtime* run)
+static void	parse_mac(char* src, char* dest, runtime* run, bool has_star)
 {
 	bool star = false;
 	int j = 0;
 	for (int i = 0;; i++)
 	{
-		if (!star && is_character(&str[j], 2, '*'))
+		if (is_character(&src[j], 2, '*'))
+		{
+			if (!has_star)
+				err_exit(PERM_MAC_WILDCARD, run);
 			star = true;
-		else if (star && is_hexa(&str[j], 2))
-			err_exit(INV_MAC, run, str);
-		else if (!is_character(&str[j], 2, '*') && !is_hexa(&str[j], 2))
-			err_exit(INV_MAC, run, str);
+		}
+		else if (star)
+			err_exit(INV_MAC, run, src);
+		else if (!is_hexa(&src[j], 2))
+			err_exit(INV_MAC, run, src);
+		ft_strlcpy(&dest[j], &src[j], 2);
 		j += 2;
 		if (!(i < 5))
 			break;
-		if (str[j] != ':')
-			err_exit(INV_MAC, run, str);
+		if (src[j] != ':')
+			err_exit(INV_MAC, run, src);
 		j++;
 	}
-	if (str[j])
-		err_exit(INV_MAC, run, str);
+	if (src[j])
+		err_exit(INV_MAC, run, src);
 }
 
 static in_addr_t	parse_ip(char* str, runtime* run)
@@ -36,7 +41,7 @@ void	parse_params(int argc, char**argv, runtime* run)
 	if (argc != 5)
 		err_exit(INV_PARAMS, run);
 	run->ip_src = parse_ip(argv[1], run);
-	parse_mac(argv[2], run);
+	parse_mac(run->mac_src, argv[2], run, false);
 	run->ip_trg = parse_ip(argv[3], run);
-	parse_mac(argv[4], run);
+	parse_mac(run->mac_trg, argv[4], run, true);
 }

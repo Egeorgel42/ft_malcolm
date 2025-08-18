@@ -14,21 +14,23 @@
 # include <net/if.h>
 # include <net/if_arp.h>
 
-struct arp_packet {
+typedef struct arp_packet {
     struct ethhdr	eth_header;
     struct arphdr	arp_header;
     unsigned char	sender_mac[6];
     in_addr_t		sender_ip;
     unsigned char	target_mac[6];
     in_addr_t		target_ip;
-} __attribute__((packed));
+} __attribute__((packed)) arp_packet;
 
 typedef struct s_runtime {
 	char**				err;
 	char**				steps;
 	in_addr_t			ip_src;
 	in_addr_t			ip_trg;
-	struct arp_packet	request;
+    unsigned char		mac_src[6];
+    unsigned char		mac_trg[6];
+	struct arp_packet	response;
 	struct sockaddr_ll	interface;
 	
 } runtime;
@@ -37,6 +39,7 @@ typedef enum e_err {
 	INV_PARAMS,
 	INV_IP,
 	INV_MAC,
+	PERM_MAC_WILDCARD,
 	SOCK_ERR,
 	ERR_MAX
 } err;
