@@ -1,17 +1,27 @@
 #include "malcolm.h"
-/*
-void	send_reply(runtime* run)
+
+void	send_reply(runtime* run, int sock)
 {
 	arp_packet reply;
 
-	memcpy(reply.eth_header.h_dest, run->, 6);
+	memcpy(reply.eth_header.h_dest, run->mac_trg, 6);
 	memcpy(reply.eth_header.h_source, run->mac_src, 6);
 	reply.eth_header.h_proto = htons(ETH_P_ARP);
 
-	reply.arp_header.ar_hrd = run->request.arp_header.ar_hrd;
-}*/
+	reply.arp_header.ar_hrd = htons(ARPHRD_ETHER);
+	reply.arp_header.ar_pro = htons(ETH_P_IP);
+	reply.arp_header.ar_hln = 6;
+	reply.arp_header.ar_pln = 4;
+	reply.arp_header.ar_op = htons(ARPOP_REPLY);
 
+	memcpy(&reply.sender_ip, &run->ip_src, 4);
+	memcpy(&reply.target_ip, &run->ip_trg, 4);
+	memcpy(reply.sender_mac, run->mac_src, 6);
+	memcpy(reply.target_mac, run->mac_trg, 6);
 
+	sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr *)&run->interface, sizeof(run->interface));
+	print_step(STEP_REPLY, run);
+}
 
 void	print_broadcast(runtime* run, arp_packet *request)
 {
@@ -48,4 +58,5 @@ void	arp(runtime* run)
 	if (sock < 0)
 		err_exit(SOCK_ERR, run);
 	while (!listen_arp(run, sock)) {}
+	send_reply(run, sock);
 }
