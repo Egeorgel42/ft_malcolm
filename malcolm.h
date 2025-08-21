@@ -8,6 +8,7 @@
 # include <ifaddrs.h>
 # include <stdio.h>
 # include <stdarg.h>
+# include <ifaddrs.h>
 # include <sys/socket.h>
 # include <netinet/if_ether.h>
 # include <netpacket/packet.h>
