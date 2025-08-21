@@ -16,12 +16,14 @@ void	send_reply(runtime* run)
 void	print_broadcast(runtime* run, arp_packet *request)
 {
 	char ifname[IF_NAMESIZE];
+	char addr[INET_ADDRSTRLEN];
 
 	if (!if_indextoname(run->interface.sll_ifindex, ifname))
 		err_exit(ERR_MAX, run);
 	print_step(STEP_INTERFACE, run, ifname);
+	inet_ntop(AF_INET, &request->sender_ip, addr, INET_ADDRSTRLEN);
 	print_step(STEP_BROADCAST, run, request->sender_mac[0], request->sender_mac[1], request->sender_mac[2], request->sender_mac[3],
-		request->sender_mac[4], request->sender_mac[5], request->sender_ip);
+		request->sender_mac[4], request->sender_mac[5], addr);
 }
 
 bool	listen_arp(runtime *run, int sock)
