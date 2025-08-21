@@ -20,7 +20,7 @@ void	print_broadcast(runtime* run, arp_packet *request)
 	if (!if_indextoname(run->interface.sll_ifindex, ifname))
 		err_exit(ERR_MAX, run);
 	print_step(STEP_INTERFACE, run, ifname);
-	print_step(STEP_BROADCAST, run, request->sender_mac, request->sender_ip);
+	print_step(STEP_BROADCAST, run, &request->sender_mac, &request->sender_ip);
 }
 
 bool	listen_arp(runtime *run, int sock)
