@@ -31,7 +31,7 @@ void	init_msgs(runtime* run)
 		exit(1);
 	}
 	assign_msg(STEP_INTERFACE, "Found available interface: %s\n", run->steps);
-	assign_msg(STEP_BROADCAST, "An ARP request has been broadcast\n\tmac address of request: %s\n\tIP address of request: %s\n", run->steps);
+	assign_msg(STEP_BROADCAST, "An ARP request has been broadcast\n\tmac address of request: %02x:%02x:%02x:%02x:%02x:%02x\n\tIP address of request: %s\n", run->steps);
 	assign_msg(STEP_WAIT_REPLY, "Now sending an ARP reply to the target address with spoofed source, please wait.", run->steps);
 	assign_msg(STEP_REPLY, "Sent an ARP reply packet, you may now check the arp table on the target", run->steps);
 	assign_msg(STEP_EXIT, "Exiting program...", run->steps);
