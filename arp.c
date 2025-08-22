@@ -18,7 +18,7 @@ void	send_reply(runtime* run, int sock)
 	memcpy(&reply.sender_ip, &run->ip_src, 4);
 	memcpy(&reply.target_ip, &run->ip_trg, 4);
 	memcpy(reply.sender_mac, run->mac_src, 6);
-	memset(reply.target_mac, 0, 6);
+	memcpy(reply.target_mac, run->mac_trg, 6);
 
 	memset(&dest, 0, sizeof(dest));
 	dest.sll_family = AF_PACKET;
