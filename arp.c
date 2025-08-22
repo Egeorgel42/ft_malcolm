@@ -5,6 +5,16 @@ void	send_reply(runtime* run, int sock)
 	arp_packet reply;
 	struct sockaddr_ll dest;
 
+	memset(&dest, 0, sizeof(dest));
+	dest.sll_family = AF_PACKET;
+	dest.sll_protocol = htons(ETH_P_ARP);
+	dest.sll_ifindex = run->trg_interface_index;
+	dest.sll_halen = ETH_ALEN;
+	memcpy(dest.sll_addr, run->mac_trg, 6);
+
+	if (bind(sock, (struct sockaddr*)&dest, sizeof(dest)) < 0)
+		err_exit(ERR_MAX, run);
+
 	memcpy(reply.eth_header.h_dest, run->mac_trg, 6);
 	memcpy(reply.eth_header.h_source, run->mac_src, 6);
 	reply.eth_header.h_proto = htons(ETH_P_ARP);
@@ -19,13 +29,6 @@ void	send_reply(runtime* run, int sock)
 	memcpy(&reply.target_ip, &run->ip_trg, 4);
 	memcpy(reply.sender_mac, run->mac_src, 6);
 	memcpy(reply.target_mac, run->mac_trg, 6);
-
-	memset(&dest, 0, sizeof(dest));
-	dest.sll_family = AF_PACKET;
-	dest.sll_protocol = htons(ETH_P_ARP);
-	dest.sll_ifindex = run->trg_interface_index;
-	dest.sll_halen = ETH_ALEN;
-	memcpy(dest.sll_addr, run->mac_trg, 6);
 
 	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) == -1)
 		err_exit(ERR_MAX, run);
