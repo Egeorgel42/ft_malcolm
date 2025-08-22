@@ -19,7 +19,8 @@ void	send_reply(runtime* run, int sock)
 	memcpy(reply.sender_mac, run->mac_src, 6);
 	memcpy(reply.target_mac, run->mac_trg, 6);
 
-	sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr *)&run->interface, sizeof(run->interface));
+	if (sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr *)&run->interface, sizeof(run->interface)) == -1)
+		err_exit(ERR_MAX, run);
 	print_step(STEP_REPLY, run);
 }
 
