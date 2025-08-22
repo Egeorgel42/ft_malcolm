@@ -19,19 +19,48 @@ void	send_reply(runtime* run, int sock)
 	memcpy(reply.sender_mac, run->mac_src, 6);
 	memcpy(reply.target_mac, run->mac_trg, 6);
 
-	if (sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr *)&run->interface, sizeof(run->interface)) == -1)
+	if (sendto(sock, &reply, sizeof(arp_packet), 0, NULL, 0) == -1)
 		err_exit(ERR_MAX, run);
 	print_step(STEP_REPLY, run);
 }
 
+bool ip_owned_by_ifa(in_addr_t ip, in_addr_t ifa_ip, in_addr_t ifa_mask)
+{
+	if ((ip & ifa_mask) == (ifa_ip & ifa_mask))
+		return true;
+	return false;
+}
+
+void	set_target_interface(runtime* run)
+{
+	struct ifaddrs *ifa_begin, *ifa_it;
+
+	if (getifaddrs(&ifa_begin))
+		err_exit(ERR_MAX, run);
+	
+	for (ifa_it = ifa_begin; ifa_it; ifa_it = ifa_it->ifa_next)
+	{
+		if (ifa_it->ifa_addr == NULL || ifa_it->ifa_netmask == NULL)
+			continue;
+		if (ip_owned_by_ifa(run->ip_trg, ((struct sockaddr_in*)ifa_it->ifa_addr)->sin_addr.s_addr, ((struct sockaddr_in*)ifa_it->ifa_netmask)->sin_addr.s_addr))
+			break;
+	}
+	if (!ifa_it)
+	{
+		char ip_str[INET_ADDRSTRLEN];
+		if (!inet_ntop(AF_INET, &run->ip_trg, ip_str, INET_ADDRSTRLEN))
+			err_exit(ERR_MAX, run);
+		err_exit(NO_INTERFACE, run, ip_str);
+	}
+	if ((run->trg_interface_index = if_nametoindex(ifa_it->ifa_name)) == 0)
+		err_exit(ERR_MAX, run);
+	freeifaddrs(ifa_begin);
+}
+
 void	print_broadcast(runtime* run, arp_packet *request)
 {
-	char ifname[IF_NAMESIZE];
 	char ip_str[INET_ADDRSTRLEN];
 
-	if (!if_indextoname(run->interface.sll_ifindex, ifname))
-		err_exit(ERR_MAX, run);
-	print_step(STEP_INTERFACE, run, ifname);
 	if (!inet_ntop(AF_INET, &request->sender_ip, ip_str, INET_ADDRSTRLEN))
 		err_exit(ERR_MAX, run);
 	print_step(STEP_BROADCAST, run, request->sender_mac[0], request->sender_mac[1], request->sender_mac[2], request->sender_mac[3],
@@ -42,8 +71,7 @@ void	print_broadcast(runtime* run, arp_packet *request)
 bool	listen_arp(runtime *run, int sock)
 {
 	arp_packet request;
-	socklen_t interface_len = sizeof(run->interface);
-	ssize_t len = recvfrom(sock, &request, sizeof(arp_packet), 0, (struct sockaddr*)&run->interface, &interface_len);
+	ssize_t len = recvfrom(sock, &request, sizeof(arp_packet), 0, NULL, 0);
 
 	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST))
 	{
@@ -58,6 +86,7 @@ void	arp(runtime* run)
 	int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
 	if (sock < 0)
 		err_exit(SOCK_ERR, run);
+	set_target_interface(run);
 	while (!listen_arp(run, sock)) {}
 	send_reply(run, sock);
 }

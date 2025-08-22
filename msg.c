@@ -22,6 +22,7 @@ void	init_msgs(runtime* run)
 	assign_msg(INV_IP, "ft_malcolm: unknown host or invalid IP address: (%s)\n", run->err);
 	assign_msg(INV_MAC, "ft_malcolm: invalid mac address: (%s)\n", run->err);
 	assign_msg(PERM_MAC_WILDCARD, "ft_malcolm: wildcard '*' not allowed for source MAC address\n", run->err);
+	assign_msg(NO_INTERFACE, "ft_malcolm: No interfaces were found for target ip: (%s)\n", run->err);
 	assign_msg(SOCK_ERR, "ft_malcolm: Socket creation failed\n", run->err);
 
 	run->steps = malloc(sizeof(char*) * STEPS_MAX);

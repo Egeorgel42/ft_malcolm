@@ -32,7 +32,7 @@ typedef struct s_runtime {
     unsigned char		mac_src[6];
     unsigned char		mac_trg[6];
 	struct arp_packet	response;
-	struct sockaddr_ll	interface;
+	unsigned int		trg_interface_index;
 	
 } runtime;
 
@@ -42,6 +42,7 @@ typedef enum e_err {
 	INV_MAC,
 	PERM_MAC_WILDCARD,
 	SOCK_ERR,
+	NO_INTERFACE,
 	ERR_MAX
 } err;
 
