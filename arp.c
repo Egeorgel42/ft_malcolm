@@ -18,7 +18,7 @@ void	send_reply(runtime* run, int sock)
 	memcpy(&reply.sender_ip, &run->ip_src, 4);
 	memcpy(&reply.target_ip, &run->ip_trg, 4);
 	memcpy(reply.sender_mac, run->mac_src, 6);
-	memcpy(reply.target_mac, run->mac_trg, 6);
+	memset(reply.target_mac, 0, 6);
 
 	memset(&dest, 0, sizeof(dest));
 	dest.sll_family = AF_PACKET;
@@ -27,7 +27,7 @@ void	send_reply(runtime* run, int sock)
 	dest.sll_halen = ETH_ALEN;
 	memcpy(dest.sll_addr, run->mac_trg, 6);
 
-	if (sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr*)&dest, sizeof(dest)) == -1)
+	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) == -1)
 		err_exit(ERR_MAX, run);
 	print_step(STEP_REPLY, run);
 }
