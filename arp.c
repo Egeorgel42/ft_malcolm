@@ -24,8 +24,8 @@ void	send_reply(runtime* run, int sock)
 	dest.sll_family = AF_PACKET;
 	dest.sll_protocol = htons(ETH_P_ARP);
 	dest.sll_ifindex = run->trg_interface_index;
-	dest.sll_halen = 4;
-	memcpy(dest.sll_addr, run->ip_trg, 4);
+	dest.sll_halen = ETH_ALEN;
+	memcpy(dest.sll_addr, run->mac_trg, 6);
 
 	if (sendto(sock, &reply, sizeof(arp_packet), 0, (struct sockaddr*)&dest, sizeof(dest)) == -1)
 		err_exit(ERR_MAX, run);
