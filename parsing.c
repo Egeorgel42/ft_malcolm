@@ -3,9 +3,9 @@
 static unsigned char hex_to_4bit(char hex)
 {
 	unsigned char res;
-	if (hex >= '0' || hex <= '9')
+	if (hex >= '0' && hex <= '9')
 		res = hex - '0';
-	else if (hex >= 'a' || hex <= 'f')
+	else if (hex >= 'a' && hex <= 'f')
 		res = hex - 'a' + 10;
 	else
 		res = hex - 'A' + 10;
