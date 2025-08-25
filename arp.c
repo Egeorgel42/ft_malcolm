@@ -27,7 +27,7 @@ void	send_reply(runtime* run, int sock)
 	dest.sll_halen = ETH_ALEN;
 	memcpy(dest.sll_addr, run->mac_trg, 6);
 
-	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) == -1)
+	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) < 1)
 		err_exit(ERR_MAX, run);
 	print_step(STEP_REPLY, run);
 }
@@ -98,4 +98,5 @@ void	arp(runtime* run)
 	set_target_interface(run);
 	while (!listen_arp(run, sock)) {}
 	send_reply(run, sock);
+	print_step(STEP_EXIT, run);
 }
