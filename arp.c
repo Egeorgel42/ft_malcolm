@@ -15,8 +15,8 @@ void	send_reply(runtime* run, int sock)
 	reply.arp_header.ar_pln = 4;
 	reply.arp_header.ar_op = htons(ARPOP_REPLY);
 
-	memcpy(&reply.sender_ip, &run->ip_src, 4);
-	memcpy(&reply.target_ip, &run->ip_trg, 4);
+	reply.sender_ip = run->ip_src;
+	reply.target_ip = run->ip_trg;
 	memcpy(reply.sender_mac, run->mac_src, 6);
 	memcpy(reply.target_mac, run->mac_trg, 6);
 
