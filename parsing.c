@@ -16,7 +16,7 @@ static void	hex_to_uchar(unsigned char* dest, char *src)
 {
 	*dest = hex_to_4bit(src[0]);
 	*dest <<= 4;
-	*dest |= hex_to_4bit(src[1]);
+	*dest += hex_to_4bit(src[1]);
 }
 
 static void	parse_mac(char* src, unsigned char* dest, runtime* run, bool has_star)
