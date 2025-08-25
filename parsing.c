@@ -1,10 +1,22 @@
 #include "malcolm.h"
 
+static unsigned char hex_to_4bit(char hex)
+{
+	unsigned char res;
+	if (hex >= '0' || hex <= '9')
+		res = hex - '0';
+	else if (hex >= 'a' || hex <= 'f')
+		res = hex - 'a' + 10;
+	else
+		res = hex - 'A' + 10;
+	return res;
+}
+
 static void	hex_to_uchar(unsigned char* dest, char *src)
 {
-	*dest = src[0];
+	*dest = hex_to_4bit(src[0]);
 	*dest <<= 4;
-	*dest &= src[1];
+	*dest &= hex_to_4bit(src[1]);
 }
 
 static void	parse_mac(char* src, unsigned char* dest, runtime* run, bool has_star)
