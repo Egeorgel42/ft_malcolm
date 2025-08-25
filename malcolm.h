@@ -15,14 +15,14 @@
 # include <net/if.h>
 # include <net/if_arp.h>
 
-typedef struct arp_packet {
+struct arp_packet {
     struct ethhdr	eth_header;
     struct arphdr	arp_header;
     unsigned char	sender_mac[6];
     in_addr_t		sender_ip;
     unsigned char	target_mac[6];
     in_addr_t		target_ip;
-} __attribute__((packed)) arp_packet;
+} __attribute__((packed));
 
 typedef struct s_runtime {
 	char**				err;

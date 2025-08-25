@@ -2,7 +2,7 @@
 
 void	send_reply(runtime* run, int sock)
 {
-	arp_packet reply;
+	struct arp_packet reply;
 	struct sockaddr_ll dest;
 
 	memcpy(reply.eth_header.h_dest, run->mac_trg, 6);
@@ -66,7 +66,7 @@ void	set_target_interface(runtime* run)
 	freeifaddrs(ifa_begin);
 }
 
-void	print_broadcast(runtime* run, arp_packet *request)
+void	print_broadcast(runtime* run, struct arp_packet *request)
 {
 	char ip_str[INET_ADDRSTRLEN];
 
@@ -79,8 +79,8 @@ void	print_broadcast(runtime* run, arp_packet *request)
 
 bool	listen_arp(runtime *run, int sock)
 {
-	arp_packet request;
-	ssize_t len = recvfrom(sock, &request, sizeof(arp_packet), 0, NULL, 0);
+	struct arp_packet request;
+	ssize_t len = recvfrom(sock, &request, sizeof(request), 0, NULL, 0);
 
 	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST))
 	{
