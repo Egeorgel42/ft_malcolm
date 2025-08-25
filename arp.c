@@ -62,6 +62,7 @@ void	set_target_interface(runtime* run)
 	}
 	if ((run->trg_interface_index = if_nametoindex(ifa_it->ifa_name)) == 0)
 		err_exit(ERR_MAX, run);
+	print_step(STEP_INTERFACE, run, ifa_it->ifa_name);
 	freeifaddrs(ifa_begin);
 }
 
