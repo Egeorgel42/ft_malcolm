@@ -82,7 +82,7 @@ bool	listen_arp(runtime *run, int sock)
 	struct arp_packet request;
 	ssize_t len = recvfrom(sock, &request, sizeof(request), 0, NULL, 0);
 
-	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST))
+	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
 	{
 		print_broadcast(run, &request);
 		return true;
