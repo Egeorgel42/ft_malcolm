@@ -53,7 +53,7 @@ void	set_target_interface(runtime* run)
 		if (ip_owned_by_ifa(run->ip_trg, ((struct sockaddr_in*)ifa_it->ifa_addr)->sin_addr.s_addr, ((struct sockaddr_in*)ifa_it->ifa_netmask)->sin_addr.s_addr))
 			break;
 	}
-	if (!ifa_it)
+	if (!ifa_it || ifa_it->ifa_flags & 0x08)
 	{
 		char ip_str[INET_ADDRSTRLEN];
 		if (!inet_ntop(AF_INET, &run->ip_trg, ip_str, INET_ADDRSTRLEN))
