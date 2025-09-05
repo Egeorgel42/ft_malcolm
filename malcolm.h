@@ -24,12 +24,6 @@ struct arp_packet {
     in_addr_t		target_ip;
 } __attribute__((packed));
 
-struct arp_packet_send {
-    struct ethhdr		eth_header;
-    struct ether_arp	arp_header;
-} __attribute__((packed));
-
-
 typedef struct s_runtime {
 	char**				err;
 	char**				steps;
