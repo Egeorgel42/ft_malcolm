@@ -20,10 +20,11 @@ void	send_reply(runtime* run, int sock)
 	ft_memcpy(reply.sender_mac, run->mac_src, 6);
 	ft_memcpy(reply.target_mac, run->mac_trg, 6);
 
-	ft_memset(&dest, 0, sizeof(dest));
 	dest.sll_family = AF_PACKET;
 	dest.sll_protocol = htons(ETH_P_ARP);
 	dest.sll_ifindex = run->trg_interface_index;
+	dest.sll_hatype = htons(ARPHRD_ETHER);
+	dest.sll_pkttype = 0;
 	dest.sll_halen = ETH_ALEN;
 	ft_memcpy(dest.sll_addr, run->mac_trg, 6);
 
