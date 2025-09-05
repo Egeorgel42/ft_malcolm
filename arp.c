@@ -2,30 +2,30 @@
 
 void	send_reply(runtime* run, int sock)
 {
-	struct arp_packet reply;
+	struct arp_packet_send reply;
 	struct sockaddr_ll dest;
 
-	memcpy(reply.eth_header.h_dest, run->mac_trg, 6);
-	memcpy(reply.eth_header.h_source, run->mac_src, 6);
+	ft_memcpy(reply.eth_header.h_dest, run->mac_trg, 6);
+	ft_memcpy(reply.eth_header.h_source, run->mac_src, 6);
 	reply.eth_header.h_proto = htons(ETH_P_ARP);
 
-	reply.arp_header.ar_hrd = htons(ARPHRD_ETHER);
-	reply.arp_header.ar_pro = htons(ETH_P_IP);
-	reply.arp_header.ar_hln = 6;
-	reply.arp_header.ar_pln = 4;
-	reply.arp_header.ar_op = htons(ARPOP_REPLY);
+	reply.arp_header.ea_hdr.ar_hrd = htons(ARPHRD_ETHER);
+	reply.arp_header.ea_hdr.ar_pro = htons(ETH_P_IP);
+	reply.arp_header.ea_hdr.ar_hln = 6;
+	reply.arp_header.ea_hdr.ar_pln = 4;
+	reply.arp_header.ea_hdr.ar_op = htons(ARPOP_REPLY);
 
-	reply.sender_ip = run->ip_src;
-	reply.target_ip = run->ip_trg;
-	memcpy(reply.sender_mac, run->mac_src, 6);
-	memcpy(reply.target_mac, run->mac_trg, 6);
+	ft_memcpy(reply.arp_header.arp_spa, &run->ip_src, 4);
+	ft_memcpy(reply.arp_header.arp_tpa, &run->ip_trg, 4);
+	ft_memcpy(reply.arp_header.arp_sha, run->mac_src, 6);
+	ft_memcpy(reply.arp_header.arp_tha, run->mac_trg, 6);
 
 	memset(&dest, 0, sizeof(dest));
 	dest.sll_family = AF_PACKET;
 	dest.sll_protocol = htons(ETH_P_ARP);
 	dest.sll_ifindex = run->trg_interface_index;
 	dest.sll_halen = ETH_ALEN;
-	memcpy(dest.sll_addr, run->mac_trg, 6);
+	ft_memcpy(dest.sll_addr, run->mac_trg, 6);
 
 	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) < 1)
 		err_exit(ERR_MAX, run);
