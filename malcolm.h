@@ -14,6 +14,9 @@
 # include <netpacket/packet.h>
 # include <net/if.h>
 # include <net/if_arp.h>
+# include <signal.h>
+
+static volatile bool keepRunning = true;
 
 struct arp_packet {
     struct ethhdr	eth_header;
@@ -62,5 +65,7 @@ void	init_msgs(runtime* run);
 bool	is_hexa(char* str, int size);
 bool	is_character(char* str, int size, char c);
 void	arp(runtime* run);
+void	free_runtime(runtime *run);
+void	check_signal_exit(runtime *run);
 
 #endif

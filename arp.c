@@ -96,8 +96,11 @@ void	arp(runtime* run)
 	int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
 	if (sock < 0)
 		err_exit(SOCK_ERR, run);
+	check_signal_exit(run);
 	set_target_interface(run);
-	while (!listen_arp(run, sock)) {}
+	check_signal_exit(run);
+	while (!listen_arp(run, sock))
+		check_signal_exit(run);
 	send_reply(run, sock);
 	print_step(STEP_EXIT, run);
 }
