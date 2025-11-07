@@ -4,20 +4,15 @@ static void	assign_msg(int nbr, char* msg, char** msg_arr)
 {
 	msg_arr[nbr] = ft_strdup(msg);
 	if (!msg_arr[nbr])
-	{
-		ft_printf(strerror(errno));
-		exit(1);
-	}
+		err_exit(ERR_MAX, NULL);
 }
 
 void	init_msgs(runtime* run)
 {
 	run->err = malloc(sizeof(char*) * ERR_MAX);
 	if (!run->err)
-	{
-		ft_printf(strerror(errno));
-		exit(1);
-	}
+		err_exit(ERR_MAX, NULL);
+		
 	assign_msg(INV_PARAMS, "ft_malcolm: Invalid parameters: source_ip | source_mac_addr | target_ip | target_mac_addr\n", run->err);
 	assign_msg(INV_IP, "ft_malcolm: unknown host or invalid IP address: (%s)\n", run->err);
 	assign_msg(INV_MAC, "ft_malcolm: invalid mac address: (%s)\n", run->err);
@@ -27,10 +22,8 @@ void	init_msgs(runtime* run)
 
 	run->steps = malloc(sizeof(char*) * STEPS_MAX);
 	if (!run->steps)
-	{
-		ft_printf(strerror(errno));
-		exit(1);
-	}
+		err_exit(ERR_MAX, NULL);
+
 	assign_msg(STEP_INTERFACE, "Found available interface: %s\n", run->steps);
 	assign_msg(STEP_BROADCAST, "An ARP request has been broadcast\n\tmac address of request: %02x:%02x:%02x:%02x:%02x:%02x\n\tIP address of request: %s\n", run->steps);
 	assign_msg(STEP_WAIT_REPLY, "Now sending an ARP reply to the target address with spoofed source, please wait...\n", run->steps);
@@ -38,6 +31,7 @@ void	init_msgs(runtime* run)
 	assign_msg(STEP_FLOOD, "Flooding the target with ARP reply packets, waiting for ARP request...\n", run->steps);
 	assign_msg(STEP_FLOOD_STOP, "Flooding of target complete, you may now check the arp table on the target.\n", run->steps);
 	assign_msg(STEP_EXIT, "Exiting program...\n", run->steps);
+	assign_msg(STEP_EXIT_SIGNAL, "\nExiting program...\n", run->steps);
 }
 
 void	print_step(int step, runtime* run, ...)

@@ -17,7 +17,7 @@ void	check_signal_exit(runtime *run)
 {
 	if (!keepRunning)
 	{
-		print_step(STEP_EXIT, run);
+		print_step(STEP_EXIT_SIGNAL, run);
 		free_runtime(run);
 		exit(0);
 	}
@@ -32,7 +32,6 @@ int main(int argc, char** argv)
 {
     struct sigaction act;
     act.sa_handler = stop_signal;
-	sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     sigaction(SIGINT, &act, NULL);
 
