@@ -30,7 +30,6 @@ void	send_reply(runtime* run, int sock)
 
 	if (sendto(sock, &reply, sizeof(reply), 0, (struct sockaddr*)&dest, sizeof(dest)) < 1)
 		err_exit(ERR_MAX, run);
-	print_step(STEP_REPLY, run);
 }
 
 bool ip_owned_by_ifa(in_addr_t ip, in_addr_t ifa_ip, in_addr_t ifa_mask)
@@ -91,6 +90,18 @@ bool	listen_arp(runtime *run, int sock)
 	return false;
 }
 
+bool	listen_arp_dontwait(runtime *run, int sock)
+{
+	struct arp_packet request;
+	ssize_t len = recvfrom(sock, &request, sizeof(request), MSG_DONTWAIT, NULL, 0);
+
+	if (len == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+		return false;
+	else if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
+		return true;
+	return false;
+}
+
 void	arp(runtime* run)
 {
 	int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
@@ -99,8 +110,24 @@ void	arp(runtime* run)
 	check_signal_exit(run);
 	set_target_interface(run);
 	check_signal_exit(run);
-	while (!listen_arp(run, sock))
-		check_signal_exit(run);
-	send_reply(run, sock);
+	if (run->flood_flag)
+	{
+		print_step(STEP_FLOOD, run);
+		while (!listen_arp_dontwait(run, sock))
+		{
+			check_signal_exit(run);
+			send_reply(run, sock);
+		}
+		send_reply(run, sock);
+		print_step(STEP_REPLY, run);
+		print_step(STEP_FLOOD_STOP, run);
+	}
+	else
+	{
+		while (!listen_arp(run, sock))
+			check_signal_exit(run);
+		send_reply(run, sock);
+		print_step(STEP_REPLY, run);
+	}
 	print_step(STEP_EXIT, run);
 }

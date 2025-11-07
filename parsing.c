@@ -59,10 +59,18 @@ static in_addr_t	parse_ip(char* str, runtime* run)
 
 void	parse_params(int argc, char**argv, runtime* run)
 {
-	if (argc != 5)
+	int	param_nbr = 1;
+
+	run->flood_flag = false;
+	if (argc == 6 && ft_strcmp(argv[1], "-f") == 0)
+	{
+		param_nbr++;
+		run->flood_flag = true;
+	}
+	else if (argc != 5)
 		err_exit(INV_PARAMS, run);
-	run->ip_src = parse_ip(argv[1], run);
-	parse_mac(argv[2], run->mac_src, run, false);
-	run->ip_trg = parse_ip(argv[3], run);
-	parse_mac(argv[4], run->mac_trg, run, true);
+	run->ip_src = parse_ip(argv[param_nbr++], run);
+	parse_mac(argv[param_nbr++], run->mac_src, run, false);
+	run->ip_trg = parse_ip(argv[param_nbr++], run);
+	parse_mac(argv[param_nbr], run->mac_trg, run, true);
 }

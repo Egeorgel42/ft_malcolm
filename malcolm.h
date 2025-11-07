@@ -36,7 +36,7 @@ typedef struct s_runtime {
     unsigned char		mac_trg[6];
 	struct arp_packet	response;
 	unsigned int		trg_interface_index;
-	
+	bool				flood_flag;
 } runtime;
 
 typedef enum e_err {
@@ -55,6 +55,8 @@ typedef enum e_steps {
 	STEP_WAIT_REPLY,
 	STEP_REPLY,
 	STEP_EXIT,
+	STEP_FLOOD,
+	STEP_FLOOD_STOP,
 	STEPS_MAX
 } steps;
 

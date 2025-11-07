@@ -35,6 +35,8 @@ void	init_msgs(runtime* run)
 	assign_msg(STEP_BROADCAST, "An ARP request has been broadcast\n\tmac address of request: %02x:%02x:%02x:%02x:%02x:%02x\n\tIP address of request: %s\n", run->steps);
 	assign_msg(STEP_WAIT_REPLY, "Now sending an ARP reply to the target address with spoofed source, please wait...\n", run->steps);
 	assign_msg(STEP_REPLY, "Sent an ARP reply packet, you may now check the arp table on the target.\n", run->steps);
+	assign_msg(STEP_FLOOD, "Flooding the target with ARP reply packets, waiting for ARP request...\n", run->steps);
+	assign_msg(STEP_FLOOD_STOP, "Flooding of target canceled.\n", run->steps);
 	assign_msg(STEP_EXIT, "Exiting program...\n", run->steps);
 }
 
@@ -50,7 +52,7 @@ void	err_exit(int err, runtime* run, ...)
 {
 	if (err == ERR_MAX)
 	{
-		printf(strerror(errno));
+		printf("%s\n", strerror(errno));
 		exit(1);
 	}
 	va_list args;

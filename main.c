@@ -11,8 +11,9 @@ void	free_runtime(runtime *run)
 	free(run);
 }
 
-void stop_signal(int) {
-    keepRunning = false;
+void stop_signal(int signal) {
+	if (signal == SIGINT)
+    	keepRunning = false;
 }
 
 int main(int argc, char** argv)
