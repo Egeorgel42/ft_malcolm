@@ -12,6 +12,7 @@ void	free_runtime(runtime *run)
 }
 
 void stop_signal(int signal) {
+	(void)signal;
     keepRunning = false;
 }
 
