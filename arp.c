@@ -66,7 +66,7 @@ void	set_target_interface(runtime* run)
 	freeifaddrs(ifa_begin);
 }
 
-void	print_broadcast(runtime* run, struct arp_packet *request)
+void	print_broadcast(runtime* run, struct arp_packet *request, bool step_wait)
 {
 	char ip_str[INET_ADDRSTRLEN];
 
@@ -74,7 +74,8 @@ void	print_broadcast(runtime* run, struct arp_packet *request)
 		err_exit(ERR_MAX, run);
 	print_step(STEP_BROADCAST, run, request->sender_mac[0], request->sender_mac[1], request->sender_mac[2], request->sender_mac[3],
 		request->sender_mac[4], request->sender_mac[5], ip_str);
-	print_step(STEP_WAIT_REPLY, run);
+	if (step_wait)
+		print_step(STEP_WAIT_REPLY, run);
 }
 
 bool	listen_arp(runtime *run, int sock)
@@ -84,7 +85,7 @@ bool	listen_arp(runtime *run, int sock)
 
 	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
 	{
-		print_broadcast(run, &request);
+		print_broadcast(run, &request, true);
 		return true;
 	}
 	return false;
@@ -99,7 +100,7 @@ bool	listen_arp_dontwait(runtime *run, int sock)
 		return false;
 	else if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
 	{
-		print_broadcast(run, &request);
+		print_broadcast(run, &request, false);
 		return true;
 	}
 	return false;
