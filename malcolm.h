@@ -16,7 +16,7 @@
 # include <net/if_arp.h>
 # include <signal.h>
 
-static volatile bool keepRunning = true;
+volatile sig_atomic_t keepRunning = 1;
 
 struct arp_packet {
     struct ethhdr	eth_header;

@@ -13,13 +13,15 @@ void	free_runtime(runtime *run)
 
 void stop_signal(int signal) {
 	(void)signal;
-    keepRunning = false;
+    keepRunning = 0;
 }
 
 int main(int argc, char** argv)
 {
     struct sigaction act;
     act.sa_handler = stop_signal;
+	sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
     sigaction(SIGINT, &act, NULL);
 
 	runtime* run = malloc(sizeof(runtime));
