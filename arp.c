@@ -66,7 +66,7 @@ void	set_target_interface(runtime* run)
 	freeifaddrs(ifa_begin);
 }
 
-void	print_broadcast(runtime* run, struct arp_packet *request, bool step_wait)
+void	print_broadcast(runtime* run, struct arp_packet *request)
 {
 	char ip_str[INET_ADDRSTRLEN];
 
@@ -74,24 +74,9 @@ void	print_broadcast(runtime* run, struct arp_packet *request, bool step_wait)
 		err_exit(ERR_MAX, run);
 	print_step(STEP_BROADCAST, run, request->sender_mac[0], request->sender_mac[1], request->sender_mac[2], request->sender_mac[3],
 		request->sender_mac[4], request->sender_mac[5], ip_str);
-	if (step_wait)
-		print_step(STEP_WAIT_REPLY, run);
 }
 
 bool	listen_arp(runtime *run, int sock)
-{
-	struct arp_packet request;
-	ssize_t len = recvfrom(sock, &request, sizeof(request), 0, NULL, 0);
-
-	if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
-	{
-		print_broadcast(run, &request, true);
-		return true;
-	}
-	return false;
-}
-
-bool	listen_arp_dontwait(runtime *run, int sock)
 {
 	struct arp_packet request;
 	ssize_t len = recvfrom(sock, &request, sizeof(request), MSG_DONTWAIT, NULL, 0);
@@ -100,7 +85,7 @@ bool	listen_arp_dontwait(runtime *run, int sock)
 		return false;
 	else if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
 	{
-		print_broadcast(run, &request, false);
+		print_broadcast(run, &request);
 		return true;
 	}
 	return false;
@@ -117,7 +102,7 @@ void	arp(runtime* run)
 	if (run->flood_flag)
 	{
 		print_step(STEP_FLOOD, run);
-		while (!listen_arp_dontwait(run, sock))
+		while (!listen_arp(run, sock))
 		{
 			check_signal_exit(run);
 			send_reply(run, sock);
@@ -129,6 +114,7 @@ void	arp(runtime* run)
 	{
 		while (!listen_arp(run, sock))
 			check_signal_exit(run);
+		print_step(STEP_WAIT_REPLY, run);
 		send_reply(run, sock);
 		print_step(STEP_REPLY, run);
 	}

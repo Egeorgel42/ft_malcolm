@@ -11,6 +11,18 @@ void	free_runtime(runtime *run)
 	free(run);
 }
 
+volatile sig_atomic_t keepRunning = 1;
+
+void	check_signal_exit(runtime *run)
+{
+	if (!keepRunning)
+	{
+		print_step(STEP_EXIT, run);
+		free_runtime(run);
+		exit(0);
+	}
+}
+
 void stop_signal(int signal) {
 	(void)signal;
     keepRunning = 0;

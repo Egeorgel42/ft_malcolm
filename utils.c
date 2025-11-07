@@ -19,13 +19,3 @@ bool	is_character(char* str, int size, char c)
 	}
 	return true;
 }
-
-void	check_signal_exit(runtime *run)
-{
-	if (!keepRunning)
-	{
-		print_step(STEP_EXIT, run);
-		free_runtime(run);
-		exit(0);
-	}
-}
