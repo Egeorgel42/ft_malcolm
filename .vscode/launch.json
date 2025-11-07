@@ -9,7 +9,7 @@
 		"type": "cppdbg",
 		"request": "launch",
 		"program": "${workspaceFolder}/malcolm",
-		"args": ["12.13.14.9", "**:**:**:**:**:**", "12.13.14.9", "**:**:**:**:**:**"],
+		"args": ["-f", "12.13.14.9", "00:00:00:00:00:00", "12.13.14.9", "00:00:00:00:00:00"],
 		"stopAtEntry": false,
 		"cwd": "${fileDirname}",
 		"environment": [],

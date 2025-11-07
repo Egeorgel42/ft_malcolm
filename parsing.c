@@ -62,7 +62,7 @@ void	parse_params(int argc, char**argv, runtime* run)
 	int	param_nbr = 1;
 
 	run->flood_flag = false;
-	if (argc == 6 && ft_strcmp(argv[1], "-f") == 0)
+	if (argc == 6 && ft_strcmp(argv[1], "-f"))
 	{
 		param_nbr++;
 		run->flood_flag = true;
