@@ -123,7 +123,6 @@ void	arp(runtime* run)
 			send_reply(run, sock);
 		}
 		send_reply(run, sock);
-		print_step(STEP_REPLY, run);
 		print_step(STEP_FLOOD_STOP, run);
 	}
 	else
