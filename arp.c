@@ -98,7 +98,10 @@ bool	listen_arp_dontwait(runtime *run, int sock)
 	if (len == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 		return false;
 	else if (len > 0 && request.arp_header.ar_op == htons(ARPOP_REQUEST) && request.target_ip == run->ip_src)
+	{
+		print_broadcast(run, &request);
 		return true;
+	}
 	return false;
 }
 
